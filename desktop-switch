@@ -1,0 +1,16 @@
+#!/bin/bash
+# Wrapper script to run the Textual TUI with proper virtual environment
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VENV_DIR="$SCRIPT_DIR/.venv"
+PYTHON="$VENV_DIR/bin/python3"
+
+# Create venv if it doesn't exist
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Setting up virtual environment..."
+    python3 -m venv "$VENV_DIR"
+    "$VENV_DIR/bin/pip" install -r "$SCRIPT_DIR/requirements.txt"
+fi
+
+# Run the TUI
+exec "$PYTHON" "$SCRIPT_DIR/tui.py" "$@"
