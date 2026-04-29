@@ -49,13 +49,12 @@ class SessionItem(ListItem):
         self.session_id = session_id
         self.display_name = display_name
         super().__init__()
-        label = f"[bold]{display_name}[/bold]"
         if is_current:
-            label += " [dim](current)[/dim]"
-        self.add_class("current" if is_current else "")
+            self.add_class("current")
 
     def compose(self) -> ComposeResult:
-        yield Label(f"[bold]{self.display_name}[/bold]{' [dim](current)[/dim]' if 'current' in self.classes else ''}")
+        suffix = " [dim](current)[/dim]" if "current" in self.classes else ""
+        yield Label(f"[bold]{self.display_name}[/bold]{suffix}")
 
 
 class DesktopSwitchApp(App):
@@ -172,11 +171,7 @@ class DesktopSwitchApp(App):
         list_view.clear()
         for session_id, display_name in self.sessions:
             is_current = session_id == self.current_session
-            item = ListItem(Label(f"{display_name}{' [dim](current)[/dim]' if is_current else ''}"))
-            item.session_id = session_id
-            item.display_name = display_name
-            if is_current:
-                item.add_class("current")
+            item = SessionItem(session_id, display_name, is_current)
             list_view.append(item)
 
     def action_switch_selected(self) -> None:
