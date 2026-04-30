@@ -5,6 +5,32 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV_DIR="$SCRIPT_DIR/.venv"
 PYTHON="$VENV_DIR/bin/python3"
 
+# Pre-flight checks
+echo "Checking dependencies..."
+
+# Check 1: Python3 installed
+if ! command -v python3 &>/dev/null; then
+    echo "Error: Python 3 is not installed."
+    exit 1
+fi
+echo "✓ Python 3 is installed"
+
+# Check 2: python3-venv module available
+if ! python3 -m venv --help &>/dev/null; then
+    echo "Error: python3-venv module is missing."
+    if command -v pacman &>/dev/null; then
+        echo "Install: sudo pacman -S python-pip"
+    elif command -v apt &>/dev/null; then
+        echo "Install: sudo apt install python3-venv"
+    else
+        echo "Install the python3-venv package for your distro."
+    fi
+    exit 1
+fi
+echo "✓ python3-venv module is available"
+
+echo "All checks passed!"
+
 # Create venv if it doesn't exist
 if [ ! -d "$VENV_DIR" ]; then
     echo "Setting up virtual environment..."
